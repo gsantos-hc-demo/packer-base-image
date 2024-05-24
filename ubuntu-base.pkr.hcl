@@ -92,6 +92,17 @@ build {
     "source.amazon-ebs.base",
   ]
 
+  # Install Vault Agent
+  provisioner "file" {
+    source      = "${path.root}/assets/vault-agent"
+    destination = "/tmp/vault-agent"
+  }
+
+  provisioner "shell" {
+    execute_command = "sudo -E sh -x -c '{{ .Vars }} {{ .Path }}'"
+    script          = "${path.root}/scripts/install-vault-agent.sh"
+  }
+
   # Apply security hardening
   provisioner "shell" {
     inline = [
