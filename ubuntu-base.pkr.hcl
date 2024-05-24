@@ -92,9 +92,11 @@ build {
     "source.amazon-ebs.base",
   ]
 
+  # Apply security hardening
   provisioner "shell" {
     inline = [
-      "echo 'Hello, World!'",
+      "sudo apt-get -yqq upgrade",
+      "echo 'Would-be security hardening steps here'",
     ]
   }
 }
