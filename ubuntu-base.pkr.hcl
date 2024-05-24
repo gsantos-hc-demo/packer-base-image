@@ -76,6 +76,18 @@ source "amazon-ebs" "base" {
 
 # Build Config. ----------------------------------------------------------------
 build {
+  hcp_packer_registry {
+    bucket_name = "ubuntu-base"
+    description = "Base Ubuntu 24.04 LTS AMI with security hardening"
+    bucket_labels = {
+      team = "platform"
+      os   = "ubuntu"
+    }
+    build_labels = {
+      release = "24.04"
+    }
+  }
+
   sources = [
     "source.amazon-ebs.base",
   ]
