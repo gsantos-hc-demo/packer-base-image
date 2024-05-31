@@ -1,0 +1,69 @@
+name: packer-base-image
+
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+    branches:
+      - main
+  schedule:
+    - cron: "0 10 21 * *" # 10am on the 21st of every month
+
+env:
+  VAULT_ADDR: ${{ vars.VAULT_ADDR }}
+  VAULT_NAMESPACE: admin # Default namespace on HCP Vault
+  VAULT_AUTH_MOUNT: github
+  VAULT_HCP_PACKER_PATH: kv/data/shared/hcp-packer
+  VAULT_AWS_CREDS_PATH: aws/creds/gh-actions-packer
+  PRODUCT_VERSION: latest
+
+jobs:
+  packer:
+    runs-on: ubuntu-latest
+    name: Build AMI with Packer
+    permissions:
+      contents: read
+      id-token: write
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup `packer`
+        uses: hashicorp/setup-packer@main
+        id: setup
+        with:
+          version: ${{ env.PRODUCT_VERSION }}
+
+      - name: Run `packer init`
+        id: init
+        run: "packer init ./ubuntu-base.pkr.hcl"
+
+      - name: Run `packer validate`
+        id: validate
+        run: "packer validate ./ubuntu-base.pkr.hcl"
+
+      - name: Get credentials
+        id: get-creds
+        if: ${{ github.event_name == 'push' || github.event_name == 'schedule' }}
+        uses: hashicorp/vault-action@v2
+        with:
+          url: ${{ env.VAULT_ADDR }}
+          namespace: ${{ env.VAULT_NAMESPACE }}
+          path: ${{ env.VAULT_AUTH_MOUNT }}
+          method: jwt
+          jwtGithubAudience: "${{ github.repository_owner }}-vault"
+          secrets: |
+            ${{ env.VAULT_HCP_PACKER_PATH }} client_id | HCP_CLIENT_ID ;
+            ${{ env.VAULT_HCP_PACKER_PATH }} client_secret | HCP_CLIENT_SECRET ;
+            ${{ env.VAULT_AWS_CREDS_PATH }} accessKey | AWS_ACCESS_KEY_ID ;
+            ${{ env.VAULT_AWS_CREDS_PATH }} secretKey | AWS_SECRET_ACCESS_KEY ;
+            ${{ env.VAULT_AWS_CREDS_PATH }} sessionToken | AWS_SESSION_TOKEN ;
+
+      - name: Run `packer build`
+        id: build
+        if: ${{ github.event_name == 'push' || github.event_name == 'schedule' }}
+        run: |
+          packer build -color=false -on-error=abort \
+            -var vault_addr=${{ env.VAULT_ADDR }} \
+            ./ubuntu-base.pkr.hcl
