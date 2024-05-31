@@ -1,3 +1,12 @@
+packer {
+  required_plugins {
+    amazon = {
+      source  = "github.com/hashicorp/amazon"
+      version = "~> 1"
+    }
+  }
+}
+
 # Variables --------------------------------------------------------------------
 variable "aws_region" {
   description = "AWS region in which the AMI is created."
@@ -32,6 +41,12 @@ variable "instance_type" {
 variable "ssh_username" {
   type    = string
   default = "ubuntu"
+}
+
+variable "vault_addr" {
+  description = "Vault address to use for the Vault Agent."
+  type        = string
+  default     = ""
 }
 
 # Provider Config. & Source AMI ------------------------------------------------
@@ -94,8 +109,15 @@ build {
 
   # Install Vault Agent
   provisioner "file" {
-    source      = "${path.root}/assets/vault-agent"
-    destination = "/tmp/vault-agent"
+    destination = "/tmp/vault-agent.hcl"
+    content = templatefile("${path.root}/assets/vault-agent/agent.hcl", {
+      vault_addr = var.vault_addr
+    })
+  }
+
+  provisioner "file" {
+    source      = "${path.root}/assets/vault-agent/vault-agent.service"
+    destination = "/tmp/vault-agent.service"
   }
 
   provisioner "shell" {
