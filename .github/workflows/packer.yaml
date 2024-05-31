@@ -15,7 +15,7 @@ env:
   VAULT_NAMESPACE: admin # Default namespace on HCP Vault
   VAULT_AUTH_MOUNT: github
   VAULT_HCP_PACKER_PATH: kv/data/shared/hcp-packer
-  VAULT_AWS_CREDS_PATH: aws/creds/gh-actions-packer
+  VAULT_AWS_CREDS_PATH: aws/creds/packer
   PRODUCT_VERSION: latest
 
 jobs:
