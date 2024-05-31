@@ -56,9 +56,9 @@ jobs:
           secrets: |
             ${{ env.VAULT_HCP_PACKER_PATH }} client_id | HCP_CLIENT_ID ;
             ${{ env.VAULT_HCP_PACKER_PATH }} client_secret | HCP_CLIENT_SECRET ;
-            ${{ env.VAULT_AWS_CREDS_PATH }} accessKey | AWS_ACCESS_KEY_ID ;
-            ${{ env.VAULT_AWS_CREDS_PATH }} secretKey | AWS_SECRET_ACCESS_KEY ;
-            ${{ env.VAULT_AWS_CREDS_PATH }} sessionToken | AWS_SESSION_TOKEN ;
+            ${{ env.VAULT_AWS_CREDS_PATH }} access_key | AWS_ACCESS_KEY_ID ;
+            ${{ env.VAULT_AWS_CREDS_PATH }} secret_key | AWS_SECRET_ACCESS_KEY ;
+            ${{ env.VAULT_AWS_CREDS_PATH }} session_token | AWS_SESSION_TOKEN ;
 
       - name: Run `packer build`
         id: build
