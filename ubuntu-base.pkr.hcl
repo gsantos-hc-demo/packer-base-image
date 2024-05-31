@@ -1,3 +1,12 @@
+packer {
+  required_plugins {
+    amazon = {
+      source  = "github.com/hashicorp/amazon"
+      version = "~> 1"
+    }
+  }
+}
+
 # Variables --------------------------------------------------------------------
 variable "aws_region" {
   description = "AWS region in which the AMI is created."
