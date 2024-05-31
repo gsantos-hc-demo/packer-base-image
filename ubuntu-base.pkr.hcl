@@ -34,6 +34,12 @@ variable "ssh_username" {
   default = "ubuntu"
 }
 
+variable "vault_addr" {
+  description = "Vault address to use for the Vault Agent."
+  type        = string
+  default     = ""
+}
+
 # Provider Config. & Source AMI ------------------------------------------------
 data "amazon-ami" "ubuntu" {
   most_recent = true
@@ -94,8 +100,15 @@ build {
 
   # Install Vault Agent
   provisioner "file" {
-    source      = "${path.root}/assets/vault-agent"
-    destination = "/tmp/vault-agent"
+    destination = "/tmp/vault-agent.hcl"
+    content = templatefile("${path.root}/assets/vault-agent/agent.hcl", {
+      vault_addr = var.vault_addr
+    })
+  }
+
+  provisioner "file" {
+    source      = "${path.root}/assets/vault-agent/vault-agent.service"
+    destination = "/tmp/vault-agent.service"
   }
 
   provisioner "shell" {

@@ -1,7 +1,7 @@
 # Sample Vault Agent configuration file
 
 vault {
-  address = "{{ vault_addr }}"
+  address = "${ vault_addr }"
 }
 
 auto_auth {
