@@ -25,7 +25,7 @@ configure_vault_agent () {
   chmod 0640 /etc/vault.d/{agent.hcl,agent.env}
 
   # Install systemd service definition
-  mv "/tmp/vault-agent.service" "/usr/lib/systemd/system/vault-agent.service"
+  mv "/tmp/vault-agent.service" "/etc/systemd/system/vault-agent.service"
   chown root:root "/etc/systemd/system/vault-agent.service"
   chmod 0644 "/etc/systemd/system/vault-agent.service"
 
