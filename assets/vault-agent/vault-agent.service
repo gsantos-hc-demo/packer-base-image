@@ -17,8 +17,8 @@ ProtectHome=read-only
 PrivateTmp=yes
 PrivateDevices=yes
 SecureBits=keep-caps
-AmbientCapabilities=CAP_IPC_LOCK
-CapabilityBoundingSet=CAP_SYSLOG CAP_IPC_LOCK
+AmbientCapabilities=CAP_IPC_LOCK CAP_CHOWN
+CapabilityBoundingSet=CAP_SYSLOG CAP_IPC_LOCK CAP_CHOWN
 NoNewPrivileges=yes
 ExecStart=/usr/bin/vault agent -config=/etc/vault.d/agent.hcl
 ExecReload=/bin/kill --signal HUP $MAINPID
