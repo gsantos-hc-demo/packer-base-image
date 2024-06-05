@@ -26,8 +26,8 @@ configure_vault_agent () {
 
   # Install systemd service definition
   mv "/tmp/vault-agent.service" "/usr/lib/systemd/system/vault-agent.service"
-  chown root:root "/usr/lib/systemd/system/vault-agent.service"
-  chmod 0644 "/usr/lib/systemd/system/vault-agent.service"
+  chown root:root "/etc/systemd/system/vault-agent.service"
+  chmod 0644 "/etc/systemd/system/vault-agent.service"
 
   # Remove Vault Server service definition and config
   rm -f /usr/lib/systemd/system/vault.service /etc/vault.d/vault.hcl
