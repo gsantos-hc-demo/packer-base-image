@@ -122,7 +122,14 @@ build {
 
   provisioner "shell" {
     execute_command = "sudo -E sh -x -c '{{ .Vars }} {{ .Path }}'"
-    script          = "${path.root}/scripts/install-vault-agent.sh"
+    scripts = [
+      "${path.root}/scripts/install-vault-agent.sh",
+      "${path.root}/scripts/configure-vault-ssh-ca.sh",
+    ]
+
+    env = {
+      VAULT_ADDR = var.vault_addr
+    }
   }
 
   # Apply security hardening
