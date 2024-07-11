@@ -4,6 +4,11 @@ packer {
       source  = "github.com/hashicorp/amazon"
       version = "~> 1"
     }
+
+    ansible = {
+      source  = "github.com/hashicorp/ansible"
+      version = "~> 1"
+    }
   }
 }
 
@@ -46,16 +51,15 @@ variable "ssh_username" {
 variable "vault_addr" {
   description = "Vault address to use for the Vault Agent."
   type        = string
-  default     = ""
 }
 
 # Provider Config. & Source AMI ------------------------------------------------
 data "amazon-ami" "ubuntu" {
   most_recent = true
   region      = var.aws_region
-  owners      = ["099720109477"] # Amazon
+  owners      = ["099720109477"] # Canonical
   filters = {
-    name                = "ubuntu/images/hvm-ssd-gp3/ubuntu-noble-24.04-amd64-server-*"
+    name                = "ubuntu/images/hvm-ssd/ubuntu-jammy-22.04-amd64-server-*"
     virtualization-type = "hvm"
     root-device-type    = "ebs"
   }
@@ -69,7 +73,7 @@ source "amazon-ebs" "base" {
 
   # AMI Settings
   ami_name        = "ubuntu-base-{{timestamp}}"
-  ami_description = "Base Ubuntu 24.04 LTS AMI with security hardening"
+  ami_description = "Base Ubuntu 22.04 LTS AMI with security hardening"
   ami_users       = var.aws_accounts
   ami_org_arns    = var.aws_orgs
   ami_regions     = var.aws_regions
@@ -87,19 +91,27 @@ source "amazon-ebs" "base" {
   source_ami    = data.amazon-ami.ubuntu.id
   instance_type = var.instance_type
   ssh_username  = var.ssh_username
+
+  # Use GP3 root storage device
+  launch_block_device_mappings {
+    device_name           = "/dev/sda1"
+    volume_type           = "gp3"
+    volume_size           = 8
+    delete_on_termination = true
+  }
 }
 
 # Build Config. ----------------------------------------------------------------
 build {
   hcp_packer_registry {
     bucket_name = "ubuntu-base"
-    description = "Base Ubuntu 24.04 LTS AMI with security hardening"
+    description = "Base Ubuntu 22.04 LTS AMI with security hardening"
     bucket_labels = {
       team = "platform"
       os   = "ubuntu"
     }
     build_labels = {
-      release = "24.04"
+      release = "22.04"
     }
   }
 
@@ -133,10 +145,7 @@ build {
   }
 
   # Apply security hardening
-  provisioner "shell" {
-    inline = [
-      "sudo apt-get -yqq upgrade",
-      "echo 'Would-be security hardening steps here'",
-    ]
+  provisioner "ansible" {
+    playbook_file = "${path.root}/assets/ansible-playbook.yml"
   }
 }

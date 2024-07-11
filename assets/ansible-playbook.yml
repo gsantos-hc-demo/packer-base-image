@@ -1,0 +1,30 @@
+---
+- name: Update system packages and apply CIS Benchmarks
+  hosts: all
+  become: yes
+  vars:
+    ansible_python_interpreter: /usr/bin/python3
+  tasks:
+    - name: Upgrade all packages to the latest version
+      when:
+        - ansible_distribution == 'Ubuntu'
+        - ansible_distribution_version == '22.04'
+      ansible.builtin.apt:
+        name: "*"
+        state: latest
+        autoremove: yes
+        autoclean: yes
+        update_cache: yes
+  roles:
+    - role: UBUNTU22-CIS
+      tags:
+        - level1-server
+        - automated
+        - patch
+      when:
+        - ansible_distribution == 'Ubuntu'
+        - ansible_distribution_version == '22.04'
+      vars:
+        # Overrides for demo purposes (don't want to remediate...)
+        ubtu22cis_rule_5_3_4: false # Do not require password for sudo escalation
+        ubtu22cis_rule_1_4_3: false # Grub password

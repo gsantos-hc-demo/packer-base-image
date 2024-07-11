@@ -41,11 +41,24 @@ jobs:
 
       - name: Run `packer validate`
         id: validate
-        run: "packer validate ./ubuntu-base.pkr.hcl"
+        run: |
+          packer validate \
+            -var vault_addr=${{ env.VAULT_ADDR }} \
+            ./ubuntu-base.pkr.hcl
+
+      - name: Install Ansible and CIS Benchmarks role
+        id: install-ansible
+        if:
+          ${{ github.event_name == 'push' || github.event_name == 'schedule' }}
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y ansible
+          ansible-galaxy install git+https://github.com/ansible-lockdown/UBUNTU22-CIS.git,tags/1.4.0
 
       - name: Get credentials
         id: get-creds
-        if: ${{ github.event_name == 'push' || github.event_name == 'schedule' }}
+        if:
+          ${{ github.event_name == 'push' || github.event_name == 'schedule' }}
         uses: hashicorp/vault-action@v2
         with:
           url: ${{ env.VAULT_ADDR }}
@@ -62,8 +75,9 @@ jobs:
 
       - name: Run `packer build`
         id: build
-        if: ${{ github.event_name == 'push' || github.event_name == 'schedule' }}
+        if:
+          ${{ github.event_name == 'push' || github.event_name == 'schedule' }}
         run: |
-          packer build -color=false -on-error=abort \
+          packer build \
             -var vault_addr=${{ env.VAULT_ADDR }} \
             ./ubuntu-base.pkr.hcl
