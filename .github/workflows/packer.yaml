@@ -54,7 +54,8 @@ jobs:
 
       - name: Get credentials
         id: get-creds
-        if: ${{ github.event_name == 'push' || github.event_name == 'schedule' }}
+        if:
+          ${{ github.event_name == 'push' || github.event_name == 'schedule' }}
         uses: hashicorp/vault-action@v2
         with:
           url: ${{ env.VAULT_ADDR }}
@@ -71,8 +72,9 @@ jobs:
 
       - name: Run `packer build`
         id: build
-        if: ${{ github.event_name == 'push' || github.event_name == 'schedule' }}
+        if:
+          ${{ github.event_name == 'push' || github.event_name == 'schedule' }}
         run: |
-          packer build -color=false -on-error=abort \
+          packer build \
             -var vault_addr=${{ env.VAULT_ADDR }} \
             ./ubuntu-base.pkr.hcl
