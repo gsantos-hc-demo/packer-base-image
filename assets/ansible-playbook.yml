@@ -1,0 +1,23 @@
+---
+- name: Update system packages and apply CIS Benchmarks
+  hosts: all
+  become: yes
+  vars:
+    ansible_python_interpreter: /usr/bin/python3
+  tasks:
+    - name: Upgrade all packages to the latest version
+      when:
+        - ansible_distribution == 'Ubuntu'
+        - ansible_distribution_version == '22.04'
+      ansible.builtin.apt:
+        name: "*"
+        state: latest
+        autoremove: yes
+        autoclean: yes
+        update_cache: yes
+  roles:
+    - role: UBUNTU22-CIS
+      tags: [cis]
+      when:
+        - ansible_distribution == 'Ubuntu'
+        - ansible_distribution_version == '22.04'

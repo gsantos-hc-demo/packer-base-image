@@ -4,6 +4,11 @@ packer {
       source  = "github.com/hashicorp/amazon"
       version = "~> 1"
     }
+
+    ansible = {
+      source  = "github.com/hashicorp/ansible"
+      version = "~> 1"
+    }
   }
 }
 
@@ -141,10 +146,7 @@ build {
   }
 
   # Apply security hardening
-  provisioner "shell" {
-    inline = [
-      "sudo apt-get -yqq upgrade",
-      "echo 'Would-be security hardening steps here'",
-    ]
+  provisioner "ansible" {
+    playbook_file = "${path.root}/assets/ansible-playbook.yml"
   }
 }
