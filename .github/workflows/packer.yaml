@@ -41,7 +41,10 @@ jobs:
 
       - name: Run `packer validate`
         id: validate
-        run: "packer validate ./ubuntu-base.pkr.hcl"
+        run: |
+          packer validate \
+            -var vault_addr=${{ env.VAULT_ADDR }} \
+            ./ubuntu-base.pkr.hcl
 
       - name: Install Ansible and CIS Benchmarks role
         id: install-ansible
