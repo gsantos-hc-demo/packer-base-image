@@ -87,6 +87,14 @@ source "amazon-ebs" "base" {
   source_ami    = data.amazon-ami.ubuntu.id
   instance_type = var.instance_type
   ssh_username  = var.ssh_username
+
+  # Use GP3 root storage device
+  launch_block_device_mappings {
+    device_name           = "/dev/sda1"
+    volume_type           = "gp3"
+    volume_size           = 8
+    delete_on_termination = true
+  }
 }
 
 # Build Config. ----------------------------------------------------------------
