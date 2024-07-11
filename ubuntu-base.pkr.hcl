@@ -53,9 +53,9 @@ variable "vault_addr" {
 data "amazon-ami" "ubuntu" {
   most_recent = true
   region      = var.aws_region
-  owners      = ["099720109477"] # Amazon
+  owners      = ["099720109477"] # Canonical
   filters = {
-    name                = "ubuntu/images/hvm-ssd-gp3/ubuntu-noble-24.04-amd64-server-*"
+    name                = "ubuntu/images/hvm-ssd/ubuntu-jammy-22.04-amd64-server-*"
     virtualization-type = "hvm"
     root-device-type    = "ebs"
   }
@@ -69,7 +69,7 @@ source "amazon-ebs" "base" {
 
   # AMI Settings
   ami_name        = "ubuntu-base-{{timestamp}}"
-  ami_description = "Base Ubuntu 24.04 LTS AMI with security hardening"
+  ami_description = "Base Ubuntu 22.04 LTS AMI with security hardening"
   ami_users       = var.aws_accounts
   ami_org_arns    = var.aws_orgs
   ami_regions     = var.aws_regions
@@ -93,13 +93,13 @@ source "amazon-ebs" "base" {
 build {
   hcp_packer_registry {
     bucket_name = "ubuntu-base"
-    description = "Base Ubuntu 24.04 LTS AMI with security hardening"
+    description = "Base Ubuntu 22.04 LTS AMI with security hardening"
     bucket_labels = {
       team = "platform"
       os   = "ubuntu"
     }
     build_labels = {
-      release = "24.04"
+      release = "22.04"
     }
   }
 
