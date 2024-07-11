@@ -51,7 +51,6 @@ variable "ssh_username" {
 variable "vault_addr" {
   description = "Vault address to use for the Vault Agent."
   type        = string
-  default     = ""
 }
 
 # Provider Config. & Source AMI ------------------------------------------------
