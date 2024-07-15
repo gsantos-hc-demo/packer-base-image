@@ -7,8 +7,6 @@ on:
   pull_request:
     branches:
       - main
-  schedule:
-    - cron: "0 10 21 * *" # 10am on the 21st of every month
 
 env:
   VAULT_ADDR: ${{ vars.VAULT_ADDR }}
