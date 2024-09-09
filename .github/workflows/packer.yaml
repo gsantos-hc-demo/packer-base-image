@@ -10,10 +10,10 @@ on:
   workflow_dispatch: {}
 
 env:
+  HCP_WORKLOAD_ID_PROVIDER: ${{ vars.HCP_WORKLOAD_ID_PROVIDER }}
   VAULT_ADDR: ${{ vars.VAULT_ADDR }}
   VAULT_NAMESPACE: admin # Default namespace on HCP Vault
   VAULT_AUTH_MOUNT: github
-  VAULT_HCP_PACKER_PATH: kv/data/shared/hcp-packer
   VAULT_AWS_CREDS_PATH: aws/creds/packer
   PRODUCT_VERSION: latest
 
