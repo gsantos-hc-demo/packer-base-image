@@ -72,7 +72,7 @@ jobs:
           namespace: ${{ env.VAULT_NAMESPACE }}
           path: ${{ env.VAULT_AUTH_MOUNT }}
           method: jwt
-          jwtGithubAudience: "${{ github.repository_owner }}-vault"
+          jwtGithubAudience: ${{ env.VAULT_ADDR }}
           secrets: |
             ${{ env.VAULT_AWS_CREDS_PATH }} access_key | AWS_ACCESS_KEY_ID ;
             ${{ env.VAULT_AWS_CREDS_PATH }} secret_key | AWS_SECRET_ACCESS_KEY ;
