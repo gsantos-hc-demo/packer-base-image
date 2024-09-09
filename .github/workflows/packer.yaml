@@ -50,7 +50,7 @@ jobs:
       - name: Install Ansible and CIS Benchmarks role
         id: install-ansible
         if:
-          ${{ github.event_name == 'push' || github.event_name == 'schedule' }}
+          ${{ github.event_name == 'push' || github.event_name == 'schedule' || github.event_name == 'workflow_dispatch' }}
         run: |
           sudo apt-get update
           sudo apt-get install -y ansible
@@ -59,7 +59,7 @@ jobs:
       - name: Get AWS credentials
         id: get-aws-creds
         if:
-          ${{ github.event_name == 'push' || github.event_name == 'schedule' }}
+          ${{ github.event_name == 'push' || github.event_name == 'schedule' || github.event_name == 'workflow_dispatch' }}
         uses: hashicorp/vault-action@v2
         with:
           url: ${{ env.VAULT_ADDR }}
@@ -75,7 +75,7 @@ jobs:
       - name: Run `packer build`
         id: build
         if:
-          ${{ github.event_name == 'push' || github.event_name == 'schedule' }}
+          ${{ github.event_name == 'push' || github.event_name == 'schedule' || github.event_name == 'workflow_dispatch' }}
         run: |
           packer build \
             -var vault_addr=${{ env.VAULT_ADDR }} \
