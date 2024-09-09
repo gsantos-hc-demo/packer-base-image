@@ -10,7 +10,8 @@ on:
   workflow_dispatch: {}
 
 env:
-  HCP_WORKLOAD_ID_PROVIDER: ${{ vars.HCP_WORKLOAD_ID_PROVIDER }}
+  HCP_CLIENT_ID: ${{ vars.HCP_CLIENT_ID }}
+  HCP_CLIENT_SECRET: ${{ secrets.HCP_CLIENT_SECRET }}
   VAULT_ADDR: ${{ vars.VAULT_ADDR }}
   VAULT_NAMESPACE: admin # Default namespace on HCP Vault
   VAULT_AUTH_MOUNT: github
@@ -53,14 +54,6 @@ jobs:
           sudo apt-get update
           sudo apt-get install -y ansible
           ansible-galaxy install git+https://github.com/ansible-lockdown/UBUNTU22-CIS.git,tags/1.4.0
-
-      - name: Get HCP credentials
-        id: get-hcp-creds
-        if:
-          ${{ github.event_name == 'push' || github.event_name == 'schedule' }}
-        uses: hashicorp/hcp-auth-action@v0
-        with:
-          workload_identity_provider: ${{ env.HCP_WORKLOAD_ID_PROVIDER }}
 
       - name: Get AWS credentials
         id: get-aws-creds
