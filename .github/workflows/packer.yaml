@@ -54,8 +54,16 @@ jobs:
           sudo apt-get install -y ansible
           ansible-galaxy install git+https://github.com/ansible-lockdown/UBUNTU22-CIS.git,tags/1.4.0
 
-      - name: Get credentials
-        id: get-creds
+      - name: Get HCP credentials
+        id: get-hcp-creds
+        if:
+          ${{ github.event_name == 'push' || github.event_name == 'schedule' }}
+        uses: hashicorp/hcp-auth-action@v0
+        with:
+          workload_identity_provider: ${{ env.HCP_WORKLOAD_ID_PROVIDER }}
+
+      - name: Get AWS credentials
+        id: get-aws-creds
         if:
           ${{ github.event_name == 'push' || github.event_name == 'schedule' }}
         uses: hashicorp/vault-action@v2
@@ -66,8 +74,6 @@ jobs:
           method: jwt
           jwtGithubAudience: "${{ github.repository_owner }}-vault"
           secrets: |
-            ${{ env.VAULT_HCP_PACKER_PATH }} client_id | HCP_CLIENT_ID ;
-            ${{ env.VAULT_HCP_PACKER_PATH }} client_secret | HCP_CLIENT_SECRET ;
             ${{ env.VAULT_AWS_CREDS_PATH }} access_key | AWS_ACCESS_KEY_ID ;
             ${{ env.VAULT_AWS_CREDS_PATH }} secret_key | AWS_SECRET_ACCESS_KEY ;
             ${{ env.VAULT_AWS_CREDS_PATH }} session_token | AWS_SESSION_TOKEN ;
