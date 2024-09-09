@@ -12,6 +12,7 @@ on:
 env:
   HCP_CLIENT_ID: ${{ vars.HCP_CLIENT_ID }}
   HCP_CLIENT_SECRET: ${{ secrets.HCP_CLIENT_SECRET }}
+  HCP_PROJECT_ID: ${{ vars.HCP_PROJECT_ID }}
   VAULT_ADDR: ${{ vars.VAULT_ADDR }}
   VAULT_NAMESPACE: admin # Default namespace on HCP Vault
   VAULT_AUTH_MOUNT: github
