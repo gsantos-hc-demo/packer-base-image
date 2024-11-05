@@ -5,10 +5,10 @@ packer {
       version = "~> 1"
     }
 
-    ansible = {
-      source  = "github.com/hashicorp/ansible"
-      version = "~> 1"
-    }
+    # ansible = {
+    #   source  = "github.com/hashicorp/ansible"
+    #   version = "~> 1"
+    # }
   }
 }
 
@@ -144,8 +144,8 @@ build {
     }
   }
 
-  # Apply security hardening
-  provisioner "ansible" {
-    playbook_file = "${path.root}/assets/ansible-playbook.yml"
-  }
+  # [DISABLED] Apply security hardening
+  # provisioner "ansible" {
+  #   playbook_file = "${path.root}/assets/ansible-playbook.yml"
+  # }
 }
