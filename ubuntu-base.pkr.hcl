@@ -1,4 +1,6 @@
 packer {
+  required_version = ">= 1.12.0" # HCP SBOM Support
+
   required_plugins {
     amazon = {
       source  = "github.com/hashicorp/amazon"
@@ -148,4 +150,19 @@ build {
   # provisioner "ansible" {
   #   playbook_file = "${path.root}/assets/ansible-playbook.yml"
   # }
+
+  provisioner "shell" {
+    execute_command = "sudo -E sh -x -c '{{ .Vars }} {{ .Path }}'"
+    inline = [
+      # Demo only! Don't run an untrusted script like this in production.
+      "bash -c \"$(curl -sSL https://install.mondoo.com/sh)\"",
+      "cnquery sbom --output cyclonedx-json --output-target /tmp/sbom_cyclonedx.json",
+    ]
+  }
+
+  provisioner "hcp-sbom" {
+    sbom_name   = "sbom-cyclonedx"
+    source      = "/tmp/sbom_cyclonedx.json"
+    destination = "./sbom.json"
+  }
 }
