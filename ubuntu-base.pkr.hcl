@@ -157,6 +157,7 @@ build {
       # Demo only! Don't run an untrusted script like this in production.
       "bash -c \"$(curl -sSL https://install.mondoo.com/sh)\"",
       "cnquery sbom --output cyclonedx-json --output-target /tmp/sbom_cyclonedx.json",
+      "chmod 0644 /tmp/sbom_cyclonedx.json",
     ]
   }
 
