@@ -2,8 +2,8 @@
 set -euxo pipefail
 
 configure_hashicorp_repo () {
-  apt -yqq update
-  apt -yqq install gpg
+  apt-get -yqq update
+  apt-get -yqq install gpg
   curl \
     --silent \
     --show-error \
@@ -13,8 +13,8 @@ configure_hashicorp_repo () {
 }
 
 install_vault () {
-  apt -yqq update
-  apt -yqq install vault
+  apt-get -yqq update
+  apt-get -yqq install vault
 }
 
 configure_vault_agent () {
